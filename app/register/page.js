@@ -30,19 +30,40 @@ export default function UserRegister() {
   const router = useRouter()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match")
-      setLoading(false)
-      return
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
     }
 
-    setTimeout(() => {
-      console.log(formData)
-    }, 1000)
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Something went wrong");
+      } else {
+        // success: maybe redirect or show a success message
+        console.log("User registered:", data);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Network error or server not responding");
+    } finally {
+      setLoading(false);
+    }
+
   }
 
   const handleInputChange = (field, value) => {
