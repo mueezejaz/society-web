@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { useRouter } from 'next/navigation'
 import { ShieldCheck } from "lucide-react"
 import {
     InputOTP,
@@ -18,6 +19,7 @@ export default function Otp() {
     const [timer, setTimer] = useState(300)
     const [isExpired, setIsExpired] = useState(false)
     const [error, setError] = useState("")
+    const router = useRouter();
     useEffect(() => {
         const interval = setInterval(() => {
             setTimer((prev) => {
@@ -62,14 +64,13 @@ export default function Otp() {
                 const errMsg = data.message || "some thing went wrong";
                 setError(errMsg);
                 return;
+            }else{
+               router.push("/login") 
             }
         } catch (error) {
             console.log(error);
             setError("net work error or server is not working");
         }
-        // TODO: Replace with actual API call
-        console.log("Verifying OTP:", otp)
-        alert("OTP verified (simulated)")
     }
 
     return (

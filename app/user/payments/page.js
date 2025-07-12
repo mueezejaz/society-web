@@ -13,15 +13,35 @@ export default function UserPayments() {
     const [currentDue] = useState(5000)
     const [selectedMonths, setSelectedMonths] = useState("1")
     const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const handlePayment = async () => {
+        setLoading(true)
+        try {
+            const response = await fetch("/api/payment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: currentDue,
+                }),
+            });
 
-    const user = {
-        name: "John Doe",
-        flatNumber: "A-101",
-    }
+            const data = await response.json();
 
-    const handlePayment = () => {
-        setShowPaymentSuccess(true)
-        setTimeout(() => setShowPaymentSuccess(false), 3000)
+            if (!response.ok || data.success === false) {
+                setError(data.message || "Something went wrong");
+                return;
+            } else {
+                setShowPaymentSuccess(true)
+            }
+        } catch (err) {
+            console.log("Fetch error:", err);
+            setError("Network error or server not responding");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const totalPaymentAmount = currentDue * Number.parseInt(selectedMonths)
@@ -38,7 +58,13 @@ export default function UserPayments() {
                             </AlertDescription>
                         </Alert>
                     )}
-
+                    {error && (
+                        <Alert className="border-red-200 bg-red-50 mb-6">
+                            <AlertDescription className="text-red-800">
+                                {error}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -110,9 +136,14 @@ export default function UserPayments() {
                                     </ul>
                                 </div>
 
-                                <Button onClick={handlePayment} className="w-full" size="lg">
-                                    <CreditCard className="h-4 w-4 mr-2" />
-                                    Pay ₹{totalPaymentAmount.toLocaleString()} Now
+                                <Button  onClick={handlePayment} className="w-full" size="lg">
+                                    {!loading ?(
+                                        <>
+                                        <CreditCard className="h-4 w-4 mr-2" />
+                                        <p>Pay ₹{totalPaymentAmount.toLocaleString()} Now</p>
+                                        </>
+                                    ): (<p>loading ....</p>) }
+
                                 </Button>
                             </div>
                         </CardContent>

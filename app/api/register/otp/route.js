@@ -5,8 +5,10 @@ import { NextResponse } from 'next/server';
 import handleRouteError from '@/app/utils/handleRouteError';
 import User from '@/app/lib/models/model.user';
 import jwt from 'jsonwebtoken';
+import dbConnect from '@/app/lib/db.connect';
 const JWT_SECRET = process.env.JWT_SECRET;
 export const POST = handleRouteError(async (request) => {
+    await dbConnect()
     const cookieStore = await cookies();
     const token = cookieStore.get('otp_token')?.value;
     if (!token) {
@@ -18,7 +20,18 @@ export const POST = handleRouteError(async (request) => {
         if (body !== otp) {
             throw new ApiError(400, "Invalid OTP");
         }
-        console.log(decoded);
+        const data = decoded.data;
+        const user = new User({
+           name:data.name,
+           password: data.password,
+           houseAddress: data.houseAddress,
+           phoneNumber:data.phoneNumber 
+        })
+        try{
+            await user.save();
+        }catch(error){
+            throw new ApiError(400, error.message || "faild to save user");
+        }
         return NextResponse.json({
             success:true,
             message: "Account created successfully"

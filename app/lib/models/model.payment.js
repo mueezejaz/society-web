@@ -11,12 +11,8 @@ const paymentSchema = new mongoose.Schema({
         type: Number,
     },
     month: {
-        type: String,
+        type: Number,
         required: true,
-        enum: [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ]
     },
 }, { timestamps: true });
 
