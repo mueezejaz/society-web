@@ -15,9 +15,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Flat number is required"],
   },
+  role: {
+    type: String,
+    required: true,
+  },
   phoneNumber: {
     type: String,
-    unique:[true,"Account already made with this number"],
+    unique: [true, "Account already made with this number"],
     required: [true, "Phone number is required"],
   },
 }, { timestamps: true });

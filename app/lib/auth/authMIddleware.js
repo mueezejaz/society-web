@@ -10,7 +10,6 @@ export const userAuth = async (token) => {
     let decoded;
     try {
         decoded = jwt.verify(token, JWT_SECRET);
-        console.log("this is decoded user" , decoded)
     } catch (err) {
         throw new ApiError(401, "Invalid token");
     }

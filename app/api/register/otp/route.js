@@ -14,30 +14,31 @@ export const POST = handleRouteError(async (request) => {
     if (!token) {
         throw new ApiError(401, "OTP token missing");
     }
-        const decoded = jwt.verify(token, JWT_SECRET);
-        const { otp, phoneNumber } = decoded;
-        const body = await request.json();
-        if (body !== otp) {
-            throw new ApiError(400, "Invalid OTP");
-        }
-        const data = decoded.data;
-        const user = new User({
-           name:data.name,
-           password: data.password,
-           houseAddress: data.houseAddress,
-           phoneNumber:data.phoneNumber 
-        })
-        try{
-            await user.save();
-        }catch(error){
-            throw new ApiError(400, error.message || "faild to save user");
-        }
-        return NextResponse.json({
-            success:true,
-            message: "Account created successfully"
-        },{status:200})
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { otp, phoneNumber } = decoded;
+    const body = await request.json();
+    if (body !== otp) {
+        throw new ApiError(400, "Invalid OTP");
+    }
+    const data = decoded.data;
+    const user = new User({
+        name: data.name,
+        password: data.password,
+        houseAddress: data.houseAddress,
+        role: "user",
+        phoneNumber: data.phoneNumber,
     })
-export const GET = (request)=>{
+    try {
+        await user.save();
+    } catch (error) {
+        throw new ApiError(400, error.message || "faild to save user");
+    }
+    return NextResponse.json({
+        success: true,
+        message: "Account created successfully"
+    }, { status: 200 })
+})
+export const GET = (request) => {
     const response = NextResponse.json({
         success: true,
         message: "OTP sent to your phone number. Please verify.",

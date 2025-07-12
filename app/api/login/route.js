@@ -44,6 +44,7 @@ export const POST = handleRouteError(async (request) => {
   );
 
   // Set token in cookie
+  console.log("the role is" , existingUser.role);
   const response = NextResponse.json({
     success: true,
     message: "Login successful",
@@ -51,6 +52,7 @@ export const POST = handleRouteError(async (request) => {
       _id: existingUser._id,
       name: existingUser.name,
       phoneNumber: existingUser.phoneNumber,
+      role:existingUser.role,
     }
   }, { status: 200 });
 

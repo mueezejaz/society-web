@@ -11,7 +11,7 @@ import dbConnect from '@/app/lib/db.connect';
 export const POST = handleRouteError(async (request) => {
     await dbConnect();
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('auth_token')?.value;
 
     if (!token) {
