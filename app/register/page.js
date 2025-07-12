@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -28,7 +28,6 @@ export default function UserRegister() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -51,14 +50,14 @@ export default function UserRegister() {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || data.success === false) {
         setError(data.message || "Something went wrong");
+        return;
       } else {
-        // success: maybe redirect or show a success message
-        console.log("User registered:", data);
+        router.push("register/otp")
       }
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.log("Fetch error:", err);
       setError("Network error or server not responding");
     } finally {
       setLoading(false);

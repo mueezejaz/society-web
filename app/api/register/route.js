@@ -6,7 +6,7 @@ import User from "@/app/lib/models/model.user.js"
 import handleRouteError from '@/app/utils/handleRouteError';
 import ApiError from '@/app/utils/ApiError';
 
-const JWT_SECRET = process.env.JWT_SECRET ;
+const JWT_SECRET = process.env.JWT_SECRET;
 const OTP_EXPIRES_IN_MINUTES = 5;
 
 function isValidPakPhone(phone) {
@@ -43,17 +43,17 @@ export const POST = handleRouteError(async (request) => {
     }
 
     const normalizedPhone = normalizePakPhone(phoneNumber);
-
     const existingUser = await User.findOne({ phoneNumber: normalizedPhone });
     if (existingUser) {
         throw new ApiError(409, "Phone number already registered");
     }
+    data.houseAddress = data.houseLatter + "-" + flatNumber;
     const otp = generateOTP();
 
     const token = jwt.sign(
         {
             otp,
-            data:data,
+            data: data,
         },
         JWT_SECRET,
         { expiresIn: `${OTP_EXPIRES_IN_MINUTES}m` }
@@ -61,7 +61,6 @@ export const POST = handleRouteError(async (request) => {
 
     await sendOTPViaSMS(normalizedPhone, otp);
 
-    // 4️⃣ Set JWT token in secure cookie
     const response = NextResponse.json({
         success: true,
         message: "OTP sent to your phone number. Please verify.",
