@@ -63,6 +63,7 @@ export const POST = handleRouteError(async (request) => {
 
     const response = NextResponse.json({
         success: true,
+        otp: otp,
         message: "OTP sent to your phone number. Please verify.",
     }, { status: 200 });
 

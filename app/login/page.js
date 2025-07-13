@@ -43,7 +43,7 @@ export default function UserRegister() {
                 setError(data.message || "Something went wrong");
                 return;
             } else {
-                if(data.role === "admin"){
+                if(data.user.role === "admin"){
                 router.push("admin/dashboard")
                 }else{
                 router.push("user/dashboard")

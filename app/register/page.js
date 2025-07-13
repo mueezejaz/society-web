@@ -54,7 +54,9 @@ export default function UserRegister() {
         setError(data.message || "Something went wrong");
         return;
       } else {
-        router.push("register/otp")
+        if (window.confirm(`Your OTP is ${data.otp}. Click OK to continue.`)) {
+          router.push("/register/otp");
+        }
       }
     } catch (err) {
       console.log("Fetch error:", err);
